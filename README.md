@@ -16,13 +16,9 @@ These types of resources are supported:
 * [Alicloud_forward_entry](https://www.terraform.io/docs/providers/alicloud/r/forward.html)
 * [Alicloud_snat_entry](https://www.terraform.io/docs/providers/alicloud/r/snat.html)
 
-This type of module is supported:
-
-* [Alicloud_vpc](https://registry.terraform.io/modules/alibaba/vpc)
-
+This module will use [Alicloud VPC](https://registry.terraform.io/modules/alibaba/vpc) to create a new VPC and several VSwitches when `vpc_id` is not set.
 
 ----------------------
-
 
 Usage
 -----
