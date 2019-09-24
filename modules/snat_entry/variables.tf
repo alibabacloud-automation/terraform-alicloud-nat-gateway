@@ -7,11 +7,12 @@ variable "snat_table_id" {
 }
 
 variable "source_vswitch_ids" {
-  type        = "list"
+  type        = list(string)
   description = "The vswitch ids. The length should be equal to snat_count."
 }
 
 variable "snat_ips" {
-  type        = "list"
+  type        = list(string)
   description = "The snat ips of the nat gateway. The length should be equal to snat_count."
 }
+

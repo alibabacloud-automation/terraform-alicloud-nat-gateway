@@ -7,26 +7,27 @@ variable "forward_table_id" {
 }
 
 variable "external_ips" {
-  type        = "list"
+  type        = list(string)
   description = "The external ip id of dnat entry. The length should be equal to dnat_count."
 }
 
 variable "internal_ips" {
-  type        = "list"
+  type        = list(string)
   description = "The internal ip of dnat entry. The length should be equal to dnat_count."
 }
 
 variable "external_ports" {
-  type        = "list"
+  type        = list(string)
   description = "The external port of dnat entry. The length should be equal to dnat_count."
 }
 
 variable "internal_ports" {
-  type        = "list"
+  type        = list(string)
   description = "The internal port of dnat entry. The length should be equal to dnat_count."
 }
 
 variable "ip_protocols" {
-  type        = "list"
+  type        = list(string)
   description = "The ip protocols of dnat entry. The length should be equal to dnat_count."
 }
+

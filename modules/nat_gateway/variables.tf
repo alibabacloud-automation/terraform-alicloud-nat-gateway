@@ -20,3 +20,4 @@ variable "description" {
   description = "The description of nat gateway."
   default     = "terraform-alicloud-nat-gateway"
 }
+
