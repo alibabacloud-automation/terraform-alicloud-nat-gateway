@@ -19,13 +19,15 @@ resource "alicloud_eip" "default2" {
 }
 
 resource "alicloud_eip_association" "default" {
-  allocation_id = "${element(alicloud_eip.default.*.id, count.index)}"
-  instance_id   = "${module.nat_gateway.this_nat_gateway_id}"
+  allocation_id = alicloud_eip.default.*.id[count.index]
+  instance_id   = module.nat_gateway.this_nat_gateway_id
+  count = 1
 }
 
 resource "alicloud_eip_association" "default2" {
-  allocation_id = "${element(alicloud_eip.default2.*.id, count.index)}"
-  instance_id   = "${module.nat_gateway.this_nat_gateway_id}"
+  allocation_id = alicloud_eip.default2.*.id[count.index]
+  instance_id   = module.nat_gateway.this_nat_gateway_id
+  count = 1
 }
 
 module "nat_gateway" {
@@ -34,7 +36,7 @@ module "nat_gateway" {
   ###############################################################
   #variables for nat gateway
   ##############################################################
-  vpc_id = "${module.module_vpc.vpc_id}"
+  vpc_id = module.module_vpc.vpc_id
 }
 
 module "dnat_entry" {
@@ -45,8 +47,8 @@ module "dnat_entry" {
   ##############################################################
   dnat_count = 1
 
-  forward_table_id = "${element(split(",", module.nat_gateway.this_forward_table_ids), 1)}"
-  external_ips     = "${split(",", alicloud_eip.default.0.ip_address)}"
+  forward_table_id = split(",", module.nat_gateway.this_forward_table_ids)[1]
+  external_ips     = split(",", alicloud_eip.default.ip_address)
   external_ports   = ["80"]
   ip_protocols     = ["tcp"]
   internal_ips     = ["172.16.1.0"]
@@ -61,7 +63,8 @@ module "snat_entry" {
   ##############################################################
   snat_count = 1
 
-  snat_table_id      = "${element(split(",", module.nat_gateway.this_snat_table_ids), 1)}"
-  source_vswitch_ids = "${split(",", module.module_vpc.vswitch_ids)}"
-  snat_ips           = "${split(",",alicloud_eip.default2.0.ip_address)}"
+  snat_table_id      = split(",", module.nat_gateway.this_snat_table_ids)[1]
+  source_vswitch_ids = split(",", module.module_vpc.vswitch_ids)
+  snat_ips           = split(",", alicloud_eip.default2.ip_address)
 }
+
