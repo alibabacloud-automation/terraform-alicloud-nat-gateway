@@ -3,6 +3,7 @@
 
 IMPROVEMENTS:
 
+- Improve readme and fix example bug [GH-4](https://github.com/terraform-alicloud-modules/terraform-alicloud-nat-gateway/pull/4)
 - Deprecated snat/dnat and support create eips and bind them with nat [GH-3](https://github.com/terraform-alicloud-modules/terraform-alicloud-nat-gateway/pull/3)
 
 ## 1.1.0 (September 24, 2019)

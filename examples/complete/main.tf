@@ -33,7 +33,7 @@ module "existing" {
   region = var.region
 
   use_existing_nat_gateway = true
-  existing_nat_gateway_id  = module.nat_gateway.this_nat_gateway_id
+  existing_nat_gateway_id  = module.nat-gateway.this_nat_gateway_id
 
   // Create eip and bind them with nat gateway
   create_eip    = true
