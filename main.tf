@@ -1,30 +1,53 @@
 provider "alicloud" {
-  version              = ">=1.56.0"
-  region               = var.region != "" ? var.region : null
-  configuration_source = "terraform-alicloud-modules/nat-gateway"
+  profile                 = var.profile != "" ? var.profile : null
+  shared_credentials_file = var.shared_credentials_file != "" ? var.shared_credentials_file : null
+  region                  = var.region != "" ? var.region : null
+  skip_region_validation  = var.skip_region_validation
+  configuration_source    = "terraform-alicloud-modules/nat-gateway"
 }
 
-module "module_vpc" {
-  source = "alibaba/vpc/alicloud"
-
-  vpc_id   = var.vpc_id
-  vpc_name = var.name
-
-  vswitch_name  = var.name
-  vswitch_cidrs = var.vswitch_cidrs
-}
-
-module "nat_gateway" {
-  source = "./modules/nat_gateway"
-
-  ###############################################################
-  #variables for nat gateway
-  ##############################################################
-  vpc_id = module.module_vpc.vpc_id
-
+resource "alicloud_nat_gateway" "this" {
+  count         = var.use_existing_nat_gateway ? 0 : var.create ? 1 : 0
+  vpc_id        = var.vpc_id
   name          = var.name
   specification = var.specification
-  description   = var.description
+  description   = "A Nat Gateway created by terraform-alicloud-modules/nat-gateway"
+
+  instance_charge_type = var.instance_charge_type
+  period               = var.period
+}
+
+locals {
+  this_nat_gateway_id = var.use_existing_nat_gateway ? var.existing_nat_gateway_id != "" ? var.existing_nat_gateway_id : var.nat_gateway_id : var.create ? concat(alicloud_nat_gateway.this.*.id, [""])[0] : ""
+}
+
+module eip {
+  source                  = "../terraform-alicloud-eip"
+  profile                 = var.profile != "" ? var.profile : null
+  shared_credentials_file = var.shared_credentials_file != "" ? var.shared_credentials_file : null
+  region                  = var.region != "" ? var.region : null
+  skip_region_validation  = var.skip_region_validation
+
+  create               = var.create_eip
+  number_of_eips       = var.number_of_eip
+  name                 = var.eip_name
+  use_num_suffix       = true
+  bandwidth            = var.eip_bandwidth
+  internet_charge_type = var.eip_internet_charge_type
+  instance_charge_type = var.eip_instance_charge_type
+  period               = var.eip_period
+  tags = merge(
+    {
+      InstanceType = "Nat"
+    }, var.eip_tags
+  )
+  isp = var.eip_isp
+}
+
+resource "alicloud_eip_association" "this" {
+  count         = var.create_eip && (var.use_existing_nat_gateway || var.create) ? var.number_of_eip : 0
+  allocation_id = module.eip.this_eip_id[count.index]
+  instance_id   = local.this_nat_gateway_id
 }
 
 module "dnat_entry" {
@@ -52,7 +75,7 @@ module "snat_entry" {
   snat_count = var.snat_count
 
   snat_table_id      = var.snat_table_id
-  source_vswitch_ids = split(",", module.module_vpc.vswitch_ids)
+  source_vswitch_ids = var.source_vswitch_ids
   snat_ips           = var.snat_ips
 }
 
