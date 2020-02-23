@@ -22,7 +22,7 @@ locals {
 }
 
 module eip {
-  source                  = "../terraform-alicloud-eip"
+  source                  = "terraform-alicloud-modules/eip/alicloud"
   profile                 = var.profile != "" ? var.profile : null
   shared_credentials_file = var.shared_credentials_file != "" ? var.shared_credentials_file : null
   region                  = var.region != "" ? var.region : null
