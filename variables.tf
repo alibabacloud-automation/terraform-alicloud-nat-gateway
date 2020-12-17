@@ -75,6 +75,12 @@ variable "period" {
   default     = 1
 }
 
+variable "nat_type" {
+  description = "The type of nat gateway. Valid values: [Normal, Enhanced]."
+  type        = string
+  default     = "Normal"
+}
+
 variable "description" {
   description = "The description of nat gateway."
   type        = string
