@@ -26,7 +26,6 @@ Create a new Nat Gateway and bind two EIPs.
 ```hcl
 module "nat-gateway" {
   source = "terraform-alicloud-modules/nat-gateway/alicloud"
-  region = var.region
 
   create = true
   vpc_id = "vpc-123435"
@@ -43,7 +42,6 @@ Set an existing nat gateway and bind two eip
 ```hcl
 module "existing" {
   source = "terraform-alicloud-modules/nat-gateway/alicloud"
-  region = var.region
 
   use_existing_nat_gateway = true
   existing_nat_gateway_id  = "nat-1232456"
@@ -60,44 +58,64 @@ module "existing" {
 * [Complete example](https://github.com/terraform-alicloud-modules/terraform-alicloud-nat-gateway/tree/master/examples/complete)
 
 ## Notes
-From the version v1.9.0, the module has removed the following `provider` setting:
+From the version v1.3.0, the module has removed the following `provider` setting:
 
 ```hcl
 provider "alicloud" {
   profile                 = var.profile != "" ? var.profile : null
+  shared_credentials_file = var.shared_credentials_file != "" ? var.shared_credentials_file : null
   region                  = var.region != "" ? var.region : null
   skip_region_validation  = var.skip_region_validation
+  configuration_source    = "terraform-alicloud-modules/nat-gateway"
 }
 ```
 
-If you still want to use the `provider` setting to apply this module, you can specify a supported version, like 1.8.0:
+If you still want to use the `provider` setting to apply this module, you can specify a supported version, like 1.2.0:
 
 ```hcl
-module "vpc" {
-  source  = "alibaba/nat-gateway/alicloud"
-  version     = "1.8.0"
+module "nat-gateway" {
+  source = "terraform-alicloud-modules/nat-gateway/alicloud"
+  version     = "1.2.0"
   region      = "cn-hangzhou"
   profile     = "Your-Profile-Name"
 
-  create            = true
-  vpc_name          = "my-env-nat-gateway"
-  // ...
+  create_eip    = true
+  number_of_eip = 2
+  eip_name      = "eip-nat-bar"
 }
 ```
 
-If you want to upgrade the module to 1.9.0 or higher in-place, you can define a provider which same region with
+If you want to upgrade the module to 1.3.0 or higher in-place, you can define a provider which same region with
 previous region:
+
+```hcl
+provider "alicloud" {
+   region  = "cn-hangzhou"
+   profile = "Your-Profile-Name"
+}
+module "nat-gateway" {
+  source = "terraform-alicloud-modules/nat-gateway/alicloud"
+  create_eip    = true
+  number_of_eip = 2
+  eip_name      = "eip-nat-bar"
+}
+```
+or specify an alias provider with a defined region to the module using `providers`:
 
 ```hcl
 provider "alicloud" {
   region  = "cn-hangzhou"
   profile = "Your-Profile-Name"
+  alias   = "hz"
 }
 module "nat-gateway" {
-  source  = "alibaba/nat-gateway/alicloud"
-  create            = true
-  vpc_name          = "my-env-nat-gateway"
-  // ...
+  source = "terraform-alicloud-modules/nat-gateway/alicloud"
+  providers = {
+    alicloud = alicloud.hz
+  }
+  create_eip    = true
+  number_of_eip = 2
+  eip_name      = "eip-nat-bar"
 }
 ```
 
