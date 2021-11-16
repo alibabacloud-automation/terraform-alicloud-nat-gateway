@@ -25,7 +25,6 @@ NAT网关作为一个网关设备，需要绑定公网IP才能正常工作。创
 ```hcl
 module "nat-gateway" {
   source = "terraform-alicloud-modules/nat-gateway/alicloud"
-  region = var.region
 
   create = true
   vpc_id = "vpc-123435"
@@ -42,7 +41,6 @@ module "nat-gateway" {
 ```hcl
 module "existing" {
   source = "terraform-alicloud-modules/nat-gateway/alicloud"
-  region = var.region
 
   use_existing_nat_gateway = true
   existing_nat_gateway_id  = "nat-1232456"
@@ -59,39 +57,60 @@ module "existing" {
 * [完整示例](https://github.com/terraform-alicloud-modules/terraform-alicloud-nat-gateway/tree/master/examples/complete)
 
 ## 注意事项
-本Module从版本v1.9.0开始已经移除掉如下的 provider 的显示设置：
+本Module从版本v1.3.0开始已经移除掉如下的 provider 的显示设置：
 ```hcl
 provider "alicloud" {
   profile                 = var.profile != "" ? var.profile : null
+  shared_credentials_file = var.shared_credentials_file != "" ? var.shared_credentials_file : null
   region                  = var.region != "" ? var.region : null
   skip_region_validation  = var.skip_region_validation
+  configuration_source    = "terraform-alicloud-modules/nat-gateway"
 }
 ```
 
-如果你依然想在Module中使用这个 provider 配置，你可以在调用Module的时候，指定一个特定的版本，比如 1.8.0:
+如果你依然想在Module中使用这个 provider 配置，你可以在调用Module的时候，指定一个特定的版本，比如 1.2.0:
 
 ```hcl
 module "nat-gateway" {
-  source  = "alibaba/nat-gateway/alicloud"
-  version     = "1.8.0"
+  source = "terraform-alicloud-modules/nat-gateway/alicloud"
+  version     = "1.2.0"
   region      = "cn-hangzhou"
   profile     = "Your-Profile-Name"
-  create      = true
-  vpc_name    = "my-env-nat-gateway"
-  // ...
+
+  create_eip    = true
+  number_of_eip = 2
+  eip_name      = "eip-nat-bar"
 }
 ```
-如果你想对正在使用中的Module升级到 1.9.0 或者更高的版本，那么你可以在模板中显示定义一个系统过Region的provider：
+如果你想对正在使用中的Module升级到 1.3.0 或者更高的版本，那么你可以在模板中显示定义一个相同Region的provider：
 ```hcl
 provider "alicloud" {
   region  = "cn-hangzhou"
   profile = "Your-Profile-Name"
 }
 module "nat-gateway" {
-  source  = "alibaba/nat-gateway/alicloud"
-  create            = true
-  vpc_name          = "my-env-nat-gateway"
-  // ...
+  source = "terraform-alicloud-modules/nat-gateway/alicloud"
+  create_eip    = true
+  number_of_eip = 2
+  eip_name      = "eip-nat-bar"
+}
+```
+或者，如果你是多Region部署，你可以利用 `alias` 定义多个 provider，并在Module中显示指定这个provider：
+
+```hcl
+provider "alicloud" {
+  region  = "cn-hangzhou"
+  profile = "Your-Profile-Name"
+  alias   = "hz"
+}
+module "nat-gateway" {
+  source = "terraform-alicloud-modules/nat-gateway/alicloud"
+  providers = {
+    alicloud = alicloud.hz
+  }
+  create_eip    = true
+  number_of_eip = 2
+  eip_name      = "eip-nat-bar"
 }
 ```
 
