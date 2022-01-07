@@ -89,11 +89,13 @@ variable "create_eip" {
   type        = bool
   default     = false
 }
+
 variable "number_of_eip" {
   description = "Number of EIP instance used to bind with this Nat gateway."
-  type        = string
-  default     = ""
+  type        = number
+  default     = 1
 }
+
 variable "eip_name" {
   description = "Name to be used on all eip as prefix. Default to 'TF-EIP-for-Nat'. The final default name would be TF-EIP-for-Nat001, TF-EIP-for-Nat002 and so on."
   default     = "TF-EIP-for-Nat"
