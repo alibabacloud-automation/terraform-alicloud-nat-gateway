@@ -15,7 +15,7 @@ NAT网关作为一个网关设备，需要绑定公网IP才能正常工作。创
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
 | <a name="requirement_alicloud"></a> [alicloud](#requirement\_alicloud) | >= 1.56.0
 
 ## 用法
@@ -37,7 +37,7 @@ module "nat-gateway" {
 }
 ```
 
-指定一个存量的 Nat 网关，并未其增加两个 EIP。
+指定一个存量的 Nat 网关，并为其增加两个 EIP。
 ```hcl
 module "existing" {
   source = "terraform-alicloud-modules/nat-gateway/alicloud"
@@ -57,7 +57,7 @@ module "existing" {
 * [完整示例](https://github.com/terraform-alicloud-modules/terraform-alicloud-nat-gateway/tree/master/examples/complete)
 
 ## 注意事项
-本Module从版本v1.3.0开始已经移除掉如下的 provider 的显示设置：
+本Module从版本v1.3.0开始已经移除掉如下的 provider 的显式设置：
 ```hcl
 provider "alicloud" {
   profile                 = var.profile != "" ? var.profile : null
@@ -82,7 +82,7 @@ module "nat-gateway" {
   eip_name      = "eip-nat-bar"
 }
 ```
-如果你想对正在使用中的Module升级到 1.3.0 或者更高的版本，那么你可以在模板中显示定义一个相同Region的provider：
+如果你想对正在使用中的Module升级到 1.3.0 或者更高的版本，那么你可以在模板中显式定义一个相同Region的provider：
 ```hcl
 provider "alicloud" {
   region  = "cn-hangzhou"
@@ -95,7 +95,7 @@ module "nat-gateway" {
   eip_name      = "eip-nat-bar"
 }
 ```
-或者，如果你是多Region部署，你可以利用 `alias` 定义多个 provider，并在Module中显示指定这个provider：
+或者，如果你是多Region部署，你可以利用 `alias` 定义多个 provider，并在Module中显式指定这个provider：
 
 ```hcl
 provider "alicloud" {
@@ -137,5 +137,3 @@ Apache 2 Licensed. See LICENSE for full details.
 * [Terraform-Provider-Alicloud Github](https://github.com/terraform-providers/terraform-provider-alicloud)
 * [Terraform-Provider-Alicloud Release](https://releases.hashicorp.com/terraform-provider-alicloud/)
 * [Terraform-Provider-Alicloud Docs](https://www.terraform.io/docs/providers/alicloud/index.html)
-
-

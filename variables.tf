@@ -2,26 +2,32 @@
 # Provider
 #################
 variable "region" {
-  description = "(Deprecated from version 1.3.0)The region used to launch this module resources."
+  description = "(Deprecated from version 1.3.0) The region used to launch this module resources."
   type        = string
   default     = ""
 }
 
 variable "profile" {
-  description = "(Deprecated from version 1.3.0)The profile name as set in the shared credentials file. If not set, it will be sourced from the ALICLOUD_PROFILE environment variable."
+  description = "(Deprecated from version 1.3.0) The profile name as set in the shared credentials file. If not set, it will be sourced from the ALICLOUD_PROFILE environment variable."
   type        = string
   default     = ""
 }
 variable "shared_credentials_file" {
-  description = "(Deprecated from version 1.3.0)This is the path to the shared credentials file. If this is not set and a profile is specified, $HOME/.aliyun/config.json will be used."
+  description = "(Deprecated from version 1.3.0) This is the path to the shared credentials file. If this is not set and a profile is specified, $HOME/.aliyun/config.json will be used."
   type        = string
   default     = ""
 }
 
 variable "skip_region_validation" {
-  description = "(Deprecated from version 1.3.0)Skip static validation of region ID. Used by users of alternative AlibabaCloud-like APIs or users w/ access to regions that are not public (yet)."
+  description = "(Deprecated from version 1.3.0) Skip static validation of region ID. Used by users of alternative AlibabaCloud-like APIs or users w/ access to regions that are not public (yet)."
   type        = bool
   default     = false
+}
+
+variable "instance_charge_type" {
+  description = "(Deprecated from version 1.4.0) The charge type of the nat gateway. Choices are 'PostPaid' and 'PrePaid'. Use payment_type instead."
+  type        = string
+  default     = "PostPaid"
 }
 
 ##############################################################
@@ -33,8 +39,20 @@ variable "create" {
   default     = true
 }
 
+variable "use_existing_nat_gateway" {
+  description = "Whether to create nat gateway. If true, you can specify an existing nat gateway by setting 'nat_gateway_id'."
+  type        = bool
+  default     = false
+}
+
 variable "vpc_id" {
   description = "ID of the VPC where to create nat gateway."
+  type        = string
+  default     = ""
+}
+
+variable "vswitch_id" {
+  description = "ID of the vswitch where to create nat gateway."
   type        = string
   default     = ""
 }
@@ -42,19 +60,13 @@ variable "vpc_id" {
 variable "name" {
   description = "Name of a new nat gateway."
   type        = string
-  default     = "terraform-alicloud-nat-gateway"
-}
-
-variable "use_existing_nat_gateway" {
-  description = "Whether to create nat gateway. If false, you can specify an existing nat gateway by setting 'nat_gateway_id'."
-  type        = bool
-  default     = false
-}
-
-variable "existing_nat_gateway_id" {
-  description = "The id of an existing nat gateway."
-  type        = string
   default     = ""
+}
+
+variable "nat_type" {
+  description = "The type of NAT gateway."
+  type        = string
+  default     = "Enhanced"
 }
 
 variable "specification" {
@@ -63,22 +75,28 @@ variable "specification" {
   default     = "Small"
 }
 
-variable "instance_charge_type" {
-  description = "The charge type of the nat gateway. Choices are 'PostPaid' and 'PrePaid'."
+variable "description" {
+  description = "The description of nat gateway."
   type        = string
-  default     = "PostPaid"
+  default     = ""
+}
+
+variable "payment_type" {
+  description = "The billing method of the NAT gateway."
+  type        = string
+  default     = "PayAsYouGo"
+}
+
+variable "internet_charge_type" {
+  description = "The internet charge type."
+  type        = string
+  default     = "PayByLcu"
 }
 
 variable "period" {
   description = "The charge duration of the PrePaid nat gateway, in month."
   type        = number
   default     = 1
-}
-
-variable "description" {
-  description = "The description of nat gateway."
-  type        = string
-  default     = "A nat gateway create by terraform module terraform-alicloud-nat-gateway"
 }
 
 ########################
@@ -89,14 +107,29 @@ variable "create_eip" {
   type        = bool
   default     = false
 }
+
 variable "number_of_eip" {
   description = "Number of EIP instance used to bind with this Nat gateway."
+  type        = number
+  default     = 1
+}
+
+variable "existing_nat_gateway_id" {
+  description = "The id of an existing nat gateway."
   type        = string
   default     = ""
 }
+
 variable "eip_name" {
   description = "Name to be used on all eip as prefix. Default to 'TF-EIP-for-Nat'. The final default name would be TF-EIP-for-Nat001, TF-EIP-for-Nat002 and so on."
-  default     = "TF-EIP-for-Nat"
+  type        = string
+  default     = ""
+}
+
+variable "use_num_suffix" {
+  description = "Always append numerical suffix to instance name, even if number_of_instances is 1"
+  type        = bool
+  default     = false
 }
 
 variable "eip_bandwidth" {
@@ -132,7 +165,7 @@ variable "eip_tags" {
 variable "eip_isp" {
   description = "The line type of the Elastic IP instance."
   type        = string
-  default     = ""
+  default     = "BGP"
 }
 
 ########################
@@ -164,32 +197,32 @@ variable "forward_table_id" {
 }
 
 variable "external_ips" {
-  type        = list(string)
   description = "(Deprecated) It has been deprecated from 1.2.0. The external ip id of dnat entry. The length should be equal to dnat_count."
+  type        = list(string)
   default     = []
 }
 
 variable "internal_ips" {
-  type        = list(string)
   description = "(Deprecated) It has been deprecated from 1.2.0. The internal ip of dnat entry. The length should be equal to dnat_count."
+  type        = list(string)
   default     = []
 }
 
 variable "external_ports" {
-  type        = list(string)
   description = "(Deprecated) It has been deprecated from 1.2.0. The external port of dnat entry. The length should be equal to dnat_count."
+  type        = list(string)
   default     = []
 }
 
 variable "internal_ports" {
-  type        = list(string)
   description = "(Deprecated) It has been deprecated from 1.2.0. The internal port of dnat entry. The length should be equal to dnat_count."
+  type        = list(string)
   default     = []
 }
 
 variable "ip_protocols" {
-  type        = list(string)
   description = "(Deprecated) It has been deprecated from 1.2.0. The ip protocols of dnat entry. The length should be equal to dnat_count."
+  type        = list(string)
   default     = []
 }
 
@@ -207,14 +240,13 @@ variable "snat_table_id" {
 }
 
 variable "source_vswitch_ids" {
-  type        = list(string)
   description = "(Deprecated) It has been deprecated from 1.2.0. The vswitch ids. The length should be equal to snat_count."
+  type        = list(string)
   default     = []
 }
 
 variable "snat_ips" {
-  type        = list(string)
   description = "(Deprecated) It has been deprecated from 1.2.0. The snat ips of the nat gateway. The length should be equal to snat_count."
+  type        = list(string)
   default     = []
 }
-

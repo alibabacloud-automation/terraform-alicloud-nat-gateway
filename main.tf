@@ -1,11 +1,13 @@
 resource "alicloud_nat_gateway" "this" {
-  count         = var.use_existing_nat_gateway ? 0 : var.create ? 1 : 0
-  vpc_id        = var.vpc_id
-  name          = var.name
-  specification = var.specification
-  description   = "A Nat Gateway created by terraform-alicloud-modules/nat-gateway"
-
-  instance_charge_type = var.instance_charge_type
+  count                = var.use_existing_nat_gateway ? 0 : var.create ? 1 : 0
+  vpc_id               = var.vpc_id
+  vswitch_id           = var.vswitch_id
+  nat_gateway_name     = var.name
+  nat_type             = var.nat_type
+  specification        = var.specification
+  description          = var.description
+  payment_type         = var.payment_type != "" ? var.payment_type : var.instance_charge_type == "PostPaid" ? "PayAsYouGo" : "Subscription"
+  internet_charge_type = var.internet_charge_type
   period               = var.period
 }
 
@@ -13,17 +15,13 @@ locals {
   this_nat_gateway_id = var.use_existing_nat_gateway ? var.existing_nat_gateway_id != "" ? var.existing_nat_gateway_id : var.nat_gateway_id : var.create ? concat(alicloud_nat_gateway.this.*.id, [""])[0] : ""
 }
 
-module eip {
-  source                  = "terraform-alicloud-modules/eip/alicloud"
-  profile                 = var.profile != "" ? var.profile : null
-  shared_credentials_file = var.shared_credentials_file != "" ? var.shared_credentials_file : null
-  region                  = var.region != "" ? var.region : null
-  skip_region_validation  = var.skip_region_validation
+module "eip" {
+  source = "terraform-alicloud-modules/eip/alicloud"
 
   create               = var.create_eip
   number_of_eips       = var.number_of_eip
   name                 = var.eip_name
-  use_num_suffix       = true
+  use_num_suffix       = var.use_num_suffix
   bandwidth            = var.eip_bandwidth
   internet_charge_type = var.eip_internet_charge_type
   instance_charge_type = var.eip_instance_charge_type
@@ -70,4 +68,3 @@ module "snat_entry" {
   source_vswitch_ids = var.source_vswitch_ids
   snat_ips           = var.snat_ips
 }
-
