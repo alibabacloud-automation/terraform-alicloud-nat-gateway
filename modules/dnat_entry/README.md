@@ -11,4 +11,3 @@
 |external_ports       | The external port of dnat entry. The length should be equal to dnat_count.  |   list  |    no    |    yes       |
 |internal_ports       | The internal port of dnat entry. The length should be equal to dnat_count.  |   list  |    no    |    yes       |
 |ip_protocols       | The ip protocols of dnat entry. The length should be equal to dnat_count.  |   list  |    no    |    yes       |
-
