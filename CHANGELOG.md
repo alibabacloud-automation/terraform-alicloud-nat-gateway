@@ -1,4 +1,8 @@
-## 1.3.0 (Unreleased)
+## 1.4.0 (Unreleased)
+## 1.3.0 (April 18, 2024)
+
+- module: improve output.tf [GH-12](https://github.com/alibabacloud-automation/terraform-alicloud-nat-gateway/pull/12)
+
 ## 1.2.0 (February 23, 2020)
 
 IMPROVEMENTS:
