@@ -76,7 +76,8 @@ module "snat_entry" {
   #variables for db snat entry
   snat_count = 1
 
-  snat_table_id      = module.nat_gateway.this_snat_table_id
-  source_vswitch_ids = module.vpc.this_vswitch_ids
-  snat_ips           = module.use_existing_id.this_eip_ips
+  snat_table_id = module.nat_gateway.this_snat_table_id
+  # source_vswitch_ids = module.vpc.this_vswitch_ids
+  source_cidrs = [module.vpc.cidr_block]
+  snat_ips     = module.use_existing_id.this_eip_ips
 }
