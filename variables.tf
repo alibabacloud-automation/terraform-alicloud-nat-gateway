@@ -1,28 +1,4 @@
-#################
-# Provider
-#################
-variable "region" {
-  description = "(Deprecated from version 1.3.0) The region used to launch this module resources."
-  type        = string
-  default     = ""
-}
 
-variable "profile" {
-  description = "(Deprecated from version 1.3.0) The profile name as set in the shared credentials file. If not set, it will be sourced from the ALICLOUD_PROFILE environment variable."
-  type        = string
-  default     = ""
-}
-variable "shared_credentials_file" {
-  description = "(Deprecated from version 1.3.0) This is the path to the shared credentials file. If this is not set and a profile is specified, $HOME/.aliyun/config.json will be used."
-  type        = string
-  default     = ""
-}
-
-variable "skip_region_validation" {
-  description = "(Deprecated from version 1.3.0) Skip static validation of region ID. Used by users of alternative AlibabaCloud-like APIs or users w/ access to regions that are not public (yet)."
-  type        = bool
-  default     = false
-}
 
 variable "instance_charge_type" {
   description = "(Deprecated from version 1.4.0) The charge type of the nat gateway. Choices are 'PostPaid' and 'PrePaid'. Use payment_type instead."
@@ -168,13 +144,58 @@ variable "eip_isp" {
   default     = "BGP"
 }
 
-########################
-# Deprecated parameters
-########################
-variable "vswitch_cidrs" {
-  description = "(Deprecated) It has been deprecated from 1.2.0. List of cidr blocks used to launch several new vswitches."
+variable "eip_netmode" {
+  description = "The network type. By default, this value is set to `public`, which specifies the public network type."
+  type        = string
+  default     = null
+}
+
+variable "eip_allocation_id" {
+  description = "The ID of the EIP instance."
+  type        = string
+  default     = null
+}
+
+variable "eip_high_definition_monitor_log_status" {
+  description = "The status of fine-grained monitoring."
+  type        = string
+  default     = null
+}
+
+variable "eip_ip_address" {
+  description = "The IP address of the EIP. Supports a maximum of 50 EIPs."
+  type        = string
+  default     = null
+}
+
+variable "eip_log_project" {
+  description = "The name of the Simple Log Service (SLS) project."
+  type        = string
+  default     = null
+}
+
+variable "eip_log_store" {
+  description = "The name of the Logstore."
+  type        = string
+  default     = null
+}
+
+variable "eip_public_ip_address_pool_id" {
+  description = "The ID of the IP address pool."
+  type        = string
+  default     = null
+}
+
+variable "eip_security_protection_types" {
+  description = "Security protection level."
   type        = list(string)
   default     = []
+}
+
+variable "eip_zone" {
+  description = "The zone of the EIP."
+  type        = string
+  default     = null
 }
 
 variable "nat_gateway_id" {
@@ -245,8 +266,16 @@ variable "source_vswitch_ids" {
   default     = []
 }
 
+
+variable "source_cidrs" {
+  description = "The private network segment of Ecs. The length should be equal to snat_count."
+  type        = list(string)
+  default     = []
+}
+
 variable "snat_ips" {
   description = "(Deprecated) It has been deprecated from 1.2.0. The snat ips of the nat gateway. The length should be equal to snat_count."
   type        = list(string)
   default     = []
 }
+
