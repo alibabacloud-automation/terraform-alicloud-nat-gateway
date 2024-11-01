@@ -1,5 +1,9 @@
-## 1.5.0 (Unreleased)
-## 1.4.0 (November 01, 2021)
+## 1.6.0 (Unreleased)
+## 1.5.0 (November 01, 2024)
+
+- module: improve the submodule [GH-14](https://github.com/alibabacloud-automation/terraform-alicloud-nat-gateway/pull/14)
+
+## 1.4.0 (November 01, 2024)
 
 - module/eip: support new attributes; remove unused attributes [GH-13](https://github.com/alibabacloud-automation/terraform-alicloud-nat-gateway/pull/13)
 
