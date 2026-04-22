@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/alibabacloud-automation/terraform-alicloud-nat-gateway/compare/v2.0.0...v2.0.1) (2026-04-22)
+
+
+### Bug Fixes
+
+* update version of the dependency module ([ab22743](https://github.com/alibabacloud-automation/terraform-alicloud-nat-gateway/commit/ab22743786ef8366bf5b4ceadfe7f35d1982fd4a))
+
 ## [2.0.0](https://github.com/alibabacloud-automation/terraform-alicloud-nat-gateway/compare/v1.5.0...v2.0.0) (2026-04-22)
 
 
