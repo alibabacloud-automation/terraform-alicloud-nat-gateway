@@ -19,7 +19,7 @@ module "eip" {
   count = var.create_eip ? 1 : 0
 
   source  = "terraform-alicloud-modules/eip/alicloud"
-  version = "2.1.0"
+  version = "3.0.0"
 
   number_of_eips                     = var.number_of_eip
   name                               = var.eip_name
