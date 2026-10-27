@@ -1,3 +1,10 @@
+## [2.0.2](https://github.com/alibabacloud-automation/terraform-alicloud-nat-gateway/compare/v2.0.1...v2.0.2) (2026-10-27)
+
+
+### Bug Fixes
+
+* use nat gateway specification attribute ([dcaa7a6](https://github.com/alibabacloud-automation/terraform-alicloud-nat-gateway/commit/dcaa7a6a1d417faf2e873d01130f23c277b1ef16))
+
 ## [2.0.1](https://github.com/alibabacloud-automation/terraform-alicloud-nat-gateway/compare/v2.0.0...v2.0.1) (2026-04-22)
 
 
